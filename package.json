@@ -58,7 +58,7 @@
     "test:all:debug": "FORCE_COLOR=1 TEST_DEBUG=true yarn test:all",
     "test:global": "FORCE_COLOR=1 yarn workspace tests test",
     "test:e2egen": "npx playwright codegen",
-    "sync-setup": "git remote add upstream git@github.com:Protofy-xyz/Protofy-internal.git && git fetch upstream && git merge upstream/main",
+    "sync-setup": "git remote add upstream git@github.com:Protofy-xyz/Protofy-internal.git",
     "sync": "git fetch upstream && git merge upstream/main"
   },
   "resolutions": {
