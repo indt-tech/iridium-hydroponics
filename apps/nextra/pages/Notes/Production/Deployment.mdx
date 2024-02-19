@@ -1,0 +1,28 @@
+# PRODUCTION DEPLOYMENT
+
+## Configure Cloudflare
+
+- **DNS > Records**
+  - Add 'Proxy status'.
+
+- **Rules > Page Rules**
+  - SSL = Flexible
+  - Cache Level = Bypass
+
+> **Flexible - SSL/TLS encryption modes**
+>
+> For more information on SSL modes, visit [Cloudflare's SSL mode documentation](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/flexible/).
+
+## Configure Ubuntu Server
+
+1. To add the rule to redirect from port 80 to 8000, use:
+   ```bash
+   sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8000
+   ```
+*If the connection between Cloudflare and the server is encrypted, change port 80 to 443.*
+
+2. To display the iptables rules, use:
+   ```bash
+   sudo iptables -t nat -L
+   ```
+
