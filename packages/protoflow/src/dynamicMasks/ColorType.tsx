@@ -6,6 +6,7 @@ import { GithubPicker, SketchPicker } from "react-color";
 import Input from '../diagram/NodeInput'
 import Popover from '../diagram/NodePopover';
 import { Pipette, Palette } from 'lucide-react'
+import { CustomProp } from './CustomProps';
 
 const ToggleItem = ({ onPress = (e) => { }, selected = false, ...props }) => (
     <div onClick={onPress}
@@ -19,6 +20,8 @@ const ToggleItem = ({ onPress = (e) => { }, selected = false, ...props }) => (
     </div>
 )
 
+export const getColorTypes = () => ['color']
+
 export default ({ nodeData = {}, node, item }) => {
     const rawThemeName = 'dark'
     const THEMENAME = rawThemeName.charAt(0).toUpperCase() + rawThemeName.slice(1)
@@ -27,18 +30,19 @@ export default ({ nodeData = {}, node, item }) => {
     const setNodeData = useFlowsStore(state => state.setNodeData)
     const metadata = useFlowsStore(state => state.metadata)
 
-    const colors = metadata?.tamagui?.color
+    const themeColors = metadata?.tamagui?.color
     const nodeFontSize = useTheme('nodeFontSize')
     const interactiveColor = useTheme('interactiveColor')
 
     const tones = ['blue', 'gray', 'green', 'orange', 'pink', 'purple', 'red', 'yellow']
 
-    const colorArrs = tones.map(t => Object.keys(colors).filter(c => c.startsWith(t) && c.endsWith(THEMENAME)).map(c => colors[c].val)) // [[], []]
+    const colorList = tones.map(t => Object.keys(themeColors).filter(c => c.startsWith(t) && c.endsWith(THEMENAME)).map(c => themeColors[c].val)).flat(1) // [[], []]
 
     const { field, label, type, fieldType } = item
 
-    const dataKey = fieldType ? (fieldType + '-' + field) : field
-    const data = nodeData[dataKey]
+    const fieldKey = field.replace(fieldType + '-', '')
+
+    const data = nodeData[field]
     const value = data?.value
 
     const [colorMode, setColorMode] = React.useState('theme');
@@ -48,21 +52,21 @@ export default ({ nodeData = {}, node, item }) => {
 
     const onSubmitThemeColor = (col) => {
         if (!col) return
-        setNodeData(node.id, { ...nodeData, [dataKey]: { ...data, key: field, value: col, kind: 'StringLiteral' } })
+        setNodeData(node.id, { ...nodeData, [field]: { ...data, key: fieldKey, value: col, kind: 'StringLiteral' } })
         setTmpColor(col)
     }
 
 
     const getInput = () => {
         switch (type) {
-            case 'color-default':
+            case 'color':
             default:
                 return <>
                     <Popover trigger={
                         <div
                             style={{
                                 width: "28px", height: "28px", cursor: 'pointer',
-                                backgroundColor: colors[value + THEMENAME]?.val ?? value,
+                                backgroundColor: themeColors[value + THEMENAME]?.val ?? value,
                                 borderRadius: 4, zIndex: 10, position: 'absolute', marginLeft: '5px',
                                 border: !value ? '1px solid white' : '', top: '13px'
                             }}
@@ -89,17 +93,16 @@ export default ({ nodeData = {}, node, item }) => {
                                 ?
                                 <div style={{ height: '280px', marginTop: '5px', overflowY: 'scroll' }}>
                                     <GithubPicker
-                                        className={"loooll"}
                                         styles={pickerStyles}
                                         triangle='hide'
                                         onChangeComplete={val => {
                                             const valToFind = convertirHSLAString(val.hsl)
-                                            const matchedKey = Object.keys(colors).find(colorKey => colors[colorKey].val == valToFind && colorKey.endsWith(THEMENAME))
+                                            const matchedKey = Object.keys(themeColors).find(colorKey => themeColors[colorKey].val == valToFind && colorKey.endsWith(THEMENAME))
                                             const newColor = matchedKey?.replace(THEMENAME, '')
                                             onSubmitThemeColor(newColor ?? val.hex)
                                         }}
                                         width={'220px'}
-                                        colors={colorArrs.flat(1)}
+                                        colors={colorList}
                                     />
                                 </div>
                                 : <SketchPicker
@@ -125,16 +128,9 @@ export default ({ nodeData = {}, node, item }) => {
                 </>
         }
     }
-    return <div style={{ alignItems: 'stretch', flexBasis: 'auto', flexShrink: 0, listStyle: 'none', position: 'relative', display: 'flex', flexDirection: "column" }}>
-        <div style={{ fontSize: nodeFontSize + 'px', padding: '8px 15px 8px 15px', display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
-            <div className={"handleKey"} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Text>{label}</Text>
-            </div>
-            <div className={"handleValue"} style={{ minWidth: '180px', marginRight: '10px', display: 'flex', flexDirection: 'row', flexGrow: 1, alignItems: 'center' }}>
-                {getInput()}
-            </div>
-        </div>
-    </div>
+
+    return <CustomProp label={label} input={getInput()}/>
+
 }
 
 function convertirHSLAString(colorHSLA) {

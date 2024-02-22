@@ -8,6 +8,9 @@ import {
     ArrowRightFromLine, ArrowLeftFromLine, ArrowDownFromLine, ArrowUpFromLine,
     AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, AlignVerticalSpaceAround, AlignVerticalSpaceBetween
 } from 'lucide-react';
+import { CustomProp } from './CustomProps';
+
+export const getAlignmentTypes = () => ['alignment-text', 'alignment-items', 'alignment-flex', 'alignment-content']
 
 export default ({ nodeData = {}, item, node }) => {
     const useFlowsStore = useContext(FlowStoreContext)
@@ -17,8 +20,8 @@ export default ({ nodeData = {}, item, node }) => {
 
     const { field, label, type, fieldType } = item
 
-    const dataKey = fieldType ? (fieldType + '-' + field) : field
-    const data = nodeData[dataKey]
+    const fieldKey = field.replace(fieldType + '-', '')
+    const data = nodeData[field]
     const value = data?.value
     const rotation = getIconRotation()
 
@@ -26,7 +29,7 @@ export default ({ nodeData = {}, item, node }) => {
         let rot = '0deg';
         const isRowDir = Boolean(nodeData["prop-flexDirection"]?.value?.startsWith("row"))
         if (isRowDir) {
-            rot = field == 'alignItems' ? '90deg' : '-90deg'
+            rot = fieldKey == 'alignItems' ? '90deg' : '-90deg'
         }
         return rot;
     }
@@ -38,10 +41,10 @@ export default ({ nodeData = {}, item, node }) => {
 
     const onToggleAlignment = (val) => {
         if (value == val) {// deletes nodeData 
-            deletePropNodeData(node.id, dataKey)
+            deletePropNodeData(node.id, field)
         }
         else { // add new prop to nodeData
-            setNodeData(node.id, { ...nodeData, [dataKey]: { ...data, key: field, value: val, kind: 'StringLiteral' } })
+            setNodeData(node.id, { ...nodeData, [field]: { ...data, key: fieldKey, value: val, kind: 'StringLiteral' } })
         }
     }
 
@@ -84,14 +87,6 @@ export default ({ nodeData = {}, item, node }) => {
         }
     }
 
-    return <div style={{ alignItems: 'stretch', flexBasis: 'auto', flexShrink: 0, listStyle: 'none', position: 'relative', display: 'flex', flexDirection: "column" }}>
-        <div style={{ fontSize: nodeFontSize + 'px', padding: '8px 15px 8px 15px', display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
-            <div className={"handleKey"} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Text>{label}</Text>
-            </div>
-            <div className={"handleValue"} style={{ minWidth: '180px', marginRight: '10px', display: 'flex', flexDirection: 'row', flexGrow: 1, alignItems: 'center' }}>
-                {getInput()}
-            </div>
-        </div>
-    </div>
+    return <CustomProp label={label} input={getInput()}/>
+
 }

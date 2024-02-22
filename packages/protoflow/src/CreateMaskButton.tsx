@@ -1,42 +1,132 @@
-import React from 'react';
-import { Button, YStack, Dialog } from '@my/ui'
+import React, { useState, useMemo } from 'react';
+import { Button, YStack, Dialog, Select, XStack, Input } from '@my/ui'
 import useTheme from './diagram/Theme';
-import { Drama } from 'lucide-react';
+import { Drama, X, Check, ChevronDown } from 'lucide-react';
+import { getAllTypes } from './dynamicMasks/CustomProps';
 
 type Props = {
     nodeData: any;
-    type: string;
+    maskType: string;
+};
+type BodyDataProps = {
+    label: string;
+    field: string;
+    type?: string;
+    fieldType: string;
 };
 
-export default ({ nodeData, type }: Props) => {
+export default ({ nodeData, maskType }: Props) => {
+    const initialData = Object.keys(nodeData).filter(k => k.startsWith('prop')).map(k => {
+        return {
+            label: nodeData[k].key,
+            field: nodeData[k].key,
+            fieldType: 'prop'
+        }
+    })
+    const [maskBodyData, setMaskBodyData] = useState<BodyDataProps[]>(initialData)
+    const [newType, setNewType] = useState<string | undefined>(undefined)
+    const [newField, setNewField] = useState<string>('')
+    const items = [undefined, ...getAllTypes()]
+
+    const clearNewData = () => {
+        setNewType('')
+        setNewField('')
+    }
+    const onAddType = () => {
+        if (!newField) return
+        var newData: BodyDataProps = {
+            label: newField,
+            field: newField,
+            fieldType: 'prop'
+
+        }
+        if (newType) {
+            newData.type = newType
+        }
+        maskBodyData.push(newData)
+        setMaskBodyData([...maskBodyData])
+        clearNewData()
+    }
+    const onChangeType = (index, key, value) => {
+        var newBodyData = [...maskBodyData]
+
+        if (key == 'field') {
+            newBodyData[index]['label'] = value
+        }
+
+        if (key == 'type' && value == "default") {
+            delete newBodyData[index][key]
+        } else {
+            newBodyData[index][key] = value
+        }
+
+        setMaskBodyData(newBodyData)
+    }
+    const onDelete = (deleteField) => {
+        const newMaskBody = maskBodyData.filter(b => b.field != deleteField)
+        setMaskBodyData(newMaskBody)
+    }
+    const onOpenChange = (open) => {
+        if (!open) {
+            setMaskBodyData(initialData)
+            clearNewData()
+        }
+    }
     const generateMask = () => {
+        const convertedData = maskBodyData.map(e => {
+            return {
+                ...e,
+                field: 'prop-' + e.field
+            }
+        })
+        const customPropsData = convertedData.filter(c => c.type)
+        const defaultPropsData = convertedData.filter(c => !c.type)
+
         fetch('/adminapi/v1/mask', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: nodeData.name,
-                data: Object.keys(nodeData).filter(k => k.startsWith('prop')).map(k => {
-                    return {
-                        label: nodeData[k].key,
-                        field: nodeData[k].key,
-                        //"type": "color-default",
-                        fieldType: 'prop'
+                "id": nodeData.name,
+                "title": nodeData.name,
+                "path": "*",
+                "type": maskType,
+                "filter": {
+                    "name": nodeData.name
+                },
+                "body": [
+                    {
+                        "type": "custom-prop",
+                        "data": customPropsData
+                    },
+                    {
+                        "type": "prop",
+                        "data": defaultPropsData
+                    },
+                    {
+                        "type": "child",
+                        "data": [
+                            {
+                                "label": "Child1",
+                                "field": "child-1",
+                                "fieldType": "child",
+                                "type": "child"
+                            }
+                        ]
                     }
-                }),
-                type: type
-            }),
+                ]
+            }
+            )
         })
             .then(response => response.json())
             .then(data => console.log(data))
     }
 
-    return <Dialog modal>
+    return <Dialog modal onOpenChange={onOpenChange}>
         <Dialog.Trigger asChild>
             <YStack justifyContent='center'>
                 <Button chromeless alignSelf="center" theme={"blue"} mb="$3">
-                    {/* create mask */}
                     <Drama fillOpacity={0} color={useTheme('interactiveColor')} />
                 </Button>
             </YStack>
@@ -56,14 +146,90 @@ export default ({ nodeData, type }: Props) => {
                 <Dialog.Description>
                     {'When you click on create, a mask will be generated for the "' + nodeData.name + '" component. Any unsaved changes will be lost.'}
                 </Dialog.Description>
-
+                <Dialog.Description>
+                    {'Properties: '}
+                </Dialog.Description>
+                <YStack>
+                    <YStack overflow="scroll" maxHeight="$18" overflowX="hidden" >
+                        {maskBodyData.map((ele, index) => (
+                            <PropEditor
+                                onChange={onChangeType}
+                                index={index}
+                                item={ele}
+                                selectItems={items}
+                                onDelete={onDelete}
+                            />
+                        ))}
+                    </YStack>
+                    <XStack gap="$3" alignItems='center'>
+                        <Input
+                            value={newField}
+                            onChangeText={setNewField}
+                            placeholder='prop name...'
+                        />
+                        <TypeSelect value={newType} onValueChange={setNewType} items={items} />
+                        <Button size="$4" onPress={onAddType} theme='blue'>Add</Button>
+                    </XStack>
+                </YStack>
                 <Dialog.Close displayWhenAdapted asChild>
                     <Button theme='blue' onPress={generateMask}>
                         Create
                     </Button>
                 </Dialog.Close>
-
             </Dialog.Content>
         </Dialog.Portal>
-    </Dialog>
+    </Dialog >
 }
+
+const PropEditor = ({ item, selectItems, onChange, index, onDelete }) => {
+    const [field, setField] = useState(item.field)
+    
+    return <XStack
+        key={item.field}
+        gap="$3"
+        marginBottom="$3"
+    >
+        <Input
+            value={field}
+            onBlur={() => onChange(index, 'field', field)}
+            onChangeText={setField}
+            placeholder='prop name...'
+        />
+        <TypeSelect value={item?.type} onValueChange={(val) => onChange(index, 'type', val)} items={selectItems} />
+        <Button size="$4" onPress={() => onDelete(item.field)} icon={X}></Button>
+    </XStack>
+}
+
+const TypeSelect = ({ value, onValueChange, items }) => <Select value={value ?? 'default'} onValueChange={onValueChange} disablePreventBodyScroll>
+    <Select.Trigger width={220} iconAfter={ChevronDown}>
+        <Select.Value placeholder="default" />
+    </Select.Trigger>
+    <Select.Content zIndex={9999999999}>
+        <Select.Viewport>
+            <Select.Group>
+                <Select.Label>Types</Select.Label>
+                {useMemo(
+                    () =>
+                        items.map((item, i) => {
+                            const itemName = item ?? 'default'
+                            return (
+                                <Select.Item
+                                    index={i}
+                                    key={item}
+                                    value={item?.toLowerCase() ?? 'default'}
+                                >
+                                    <Select.ItemText>
+                                        {itemName}
+                                    </Select.ItemText>
+                                    <Select.ItemIndicator marginLeft="auto">
+                                        <Check size={16} />
+                                    </Select.ItemIndicator>
+                                </Select.Item>
+                            )
+                        }),
+                    [items]
+                )}
+            </Select.Group>
+        </Select.Viewport>
+    </Select.Content>
+</Select>

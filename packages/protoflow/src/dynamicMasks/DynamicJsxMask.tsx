@@ -3,30 +3,7 @@ import Node, { Field, FlowPort, NodeParams } from '../Node';
 import FallbackPort from '../FallbackPort';
 import AddPropButton from '../AddPropButton';
 import { Code } from 'lucide-react'
-import { getPropsFieldNamesArr, getProtolibParams, getProtolibProps } from './ProtolibProps';
-import AlignmentType from './AlignmentType';
-import ColorType from './ColorType';
-
-const TypeProp = ({ item, node, nodeData }) => {
-    var type = item.type ?? ''
-    var category
-
-    if (type.startsWith('alignment-')) {
-        category = 'alignment'
-
-    } else if (type.startsWith('color-')) {
-        category = 'color'
-    }
-
-    switch (category) {
-        case 'alignment':
-            return <AlignmentType key={type} node={node} item={item} nodeData={nodeData} />
-        case 'color':
-            return <ColorType key={type} node={node} item={item} nodeData={nodeData} />
-        default:
-            return <></>
-    }
-}
+import { CustomPropType, getCustomPropsFields } from './CustomProps';
 
 const DynamicJsxMask = (node: any = {}, nodeData = {}, topics, mask) => {
     const propsArray: Field[] = Object.keys(nodeData).filter((p) => p.startsWith('prop-')).map((prop: any, i) => {
@@ -51,14 +28,14 @@ const DynamicJsxMask = (node: any = {}, nodeData = {}, topics, mask) => {
                         case 'prop': {
                             const redirectProp = mask.data.body.find(e => e.type == 'redirect');
                             const redirectPropName = redirectProp?.params?.port;
-                            const hasProtolibProps = mask.data.body.find(i => i.type == 'protolibProps')
-                            const protolibProps = getProtolibProps(mask.data.body)
+                            const hasCustomProps = mask.data.body.find(i => i.type == 'custom-prop')
+                            const customProps = getCustomPropsFields(mask.data.body)
 
                             return <>
                                 <NodeParams id={node.id} params={element.data} />
                                 <NodeParams
                                     id={node.id}
-                                    params={propsArray.filter(p => !protolibProps.includes(p.field) || !hasProtolibProps)
+                                    params={propsArray.filter(p => !customProps.includes(p.field) || !hasCustomProps)
                                         .filter(item => !element.data.find(i => i.field == item.field) && (item.field != redirectPropName))
                                     }
                                 />
@@ -74,14 +51,11 @@ const DynamicJsxMask = (node: any = {}, nodeData = {}, topics, mask) => {
                         case 'redirect': {
                             return <FallbackPort node={node} port={element.params.port} type={"target"} fallbackPort={element.params.fallbackPort} portType={"_"} preText={element.params.preText} postText={element.params.postText} />
                         }
-                        case 'protolibProps': {
-                            const fieldArr = getPropsFieldNamesArr(element.data)
-
+                        case 'custom-prop': {
                             return <>
                                 {
-                                    element.data.map((item, index) => <TypeProp key={index} item={item} node={node} nodeData={nodeData} />)
+                                    element.data.map((item, index) => <CustomPropType key={index} item={item} node={node} nodeData={nodeData} />)
                                 }
-                                <NodeParams id={node.id} params={getProtolibParams(fieldArr)} />
                             </>
                         }
                     }

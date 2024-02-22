@@ -9,29 +9,29 @@
         },
         "body": [
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "backgroundColor",
-                        "field": "backgroundColor",
-                        "type": "color-default",
+                        "field": "prop-backgroundColor",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "flexDirection",
-                        "field": "flexDirection",
+                        "field": "prop-flexDirection",
                         "type": "alignment-flex",
                         "fieldType": "prop"
                     },
                     {
                         "label": "justifyContent",
-                        "field": "justifyContent",
+                        "field": "prop-justifyContent",
                         "type": "alignment-content",
                         "fieldType": "prop"
                     },
                     {
                         "label": "alignItems",
-                        "field": "alignItems",
+                        "field": "prop-alignItems",
                         "type": "alignment-items",
                         "fieldType": "prop"
                     }
@@ -60,29 +60,29 @@
         },
         "body": [
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "backgroundColor",
-                        "field": "backgroundColor",
-                        "type": "color-default",
+                        "field": "prop-backgroundColor",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "flexDirection",
-                        "field": "flexDirection",
+                        "field": "prop-flexDirection",
                         "type": "alignment-flex",
                         "fieldType": "prop"
                     },
                     {
                         "label": "justifyContent",
-                        "field": "justifyContent",
+                        "field": "prop-justifyContent",
                         "type": "alignment-content",
                         "fieldType": "prop"
                     },
                     {
                         "label": "alignItems",
-                        "field": "alignItems",
+                        "field": "prop-alignItems",
                         "type": "alignment-items",
                         "fieldType": "prop"
                     }
@@ -111,21 +111,21 @@
         },
         "body": [
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "width",
-                        "field": "width",
+                        "field": "prop-width",
                         "fieldType": "prop"
                     },
                     {
                         "label": "height",
-                        "field": "height",
+                        "field": "prop-height",
                         "fieldType": "prop"
                     },
                     {
                         "label": "opacity",
-                        "field": "opacity",
+                        "field": "prop-opacity",
                         "fieldType": "prop"
                     }
                 ]
@@ -137,8 +137,7 @@
                         "label": "url",
                         "field": "prop-url",
                         "fieldType": "prop",
-                        "static": true,
-                        "type": "prop"
+                        "static": true
                     }
                 ]
             }
@@ -154,29 +153,29 @@
         },
         "body": [
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "backgroundColor",
-                        "field": "backgroundColor",
-                        "type": "color-default",
+                        "field": "prop-backgroundColor",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "flexDirection",
-                        "field": "flexDirection",
+                        "field": "prop-flexDirection",
                         "type": "alignment-flex",
                         "fieldType": "prop"
                     },
                     {
                         "label": "justifyContent",
-                        "field": "justifyContent",
+                        "field": "prop-justifyContent",
                         "type": "alignment-content",
                         "fieldType": "prop"
                     },
                     {
                         "label": "alignItems",
-                        "field": "alignItems",
+                        "field": "prop-alignItems",
                         "type": "alignment-items",
                         "fieldType": "prop"
                     }
@@ -189,8 +188,7 @@
                         "label": "title",
                         "field": "prop-title",
                         "fieldType": "prop",
-                        "static": true,
-                        "type": "prop"
+                        "static": true
                     }
                 ],
                 "disableAdd": false
@@ -230,28 +228,28 @@
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "color",
-                        "field": "color",
-                        "type": "color-default",
+                        "field": "prop-color",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "flexDirection",
-                        "field": "flexDirection",
+                        "field": "prop-flexDirection",
                         "type": "alignment-flex",
                         "fieldType": "prop"
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     },
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     }
                 ]
@@ -284,34 +282,34 @@
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "color",
-                        "field": "color",
-                        "type": "color-default",
+                        "field": "prop-color",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "textAlign",
-                        "field": "textAlign",
+                        "field": "prop-textAlign",
                         "type": "alignment-text",
                         "fieldType": "prop"
                     },
                     {
                         "label": "alignSelf",
-                        "field": "alignSelf",
+                        "field": "prop-alignSelf",
                         "type": "alignment-items",
                         "fieldType": "prop"
                     },
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     }
                 ]
@@ -344,29 +342,29 @@
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "color",
-                        "field": "color",
-                        "type": "color-default",
+                        "field": "prop-color",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "textAlign",
-                        "field": "textAlign",
+                        "field": "prop-textAlign",
                         "type": "alignment-text",
                         "fieldType": "prop"
                     },
                     {
                         "label": "alignSelf",
-                        "field": "alignSelf",
+                        "field": "prop-alignSelf",
                         "type": "alignment-items",
                         "fieldType": "prop"
                     },
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     },
                     {
@@ -376,7 +374,7 @@
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     }
                 ]
@@ -409,34 +407,34 @@
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "color",
-                        "field": "color",
-                        "type": "color-default",
+                        "field": "prop-color",
+                        "type": "color",
                         "fieldType": "prop"
                     },
                     {
                         "label": "textAlign",
-                        "field": "textAlign",
+                        "field": "prop-textAlign",
                         "type": "alignment-text",
                         "fieldType": "prop"
                     },
                     {
                         "label": "alignSelf",
-                        "field": "alignSelf",
+                        "field": "prop-alignSelf",
                         "type": "alignment-items",
                         "fieldType": "prop"
                     },
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     }
                 ]
@@ -469,22 +467,22 @@
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "textAlign",
-                        "field": "textAlign",
+                        "field": "prop-textAlign",
                         "type": "alignment-text",
                         "fieldType": "prop"
                     },
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     }
                 ]
@@ -518,8 +516,7 @@
                         "label": "description",
                         "field": "prop-description",
                         "fieldType": "prop",
-                        "static": true,
-                        "type": "prop"
+                        "static": true
                     }
                 ]
             },
@@ -558,16 +555,16 @@
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     }
                 ]
@@ -609,30 +606,28 @@
                         "label": "title",
                         "field": "prop-title",
                         "fieldType": "prop",
-                        "static": true,
-                        "type": "prop"
+                        "static": true
                     },
                     {
                         "label": "subtitle",
                         "field": "prop-subtitle",
                         "fieldType": "prop",
-                        "static": true,
-                        "type": "prop"
+                        "static": true
                     }
                 ],
                 "disableAdd": true
             },
             {
-                "type": "protolibProps",
+                "type": "custom-prop",
                 "data": [
                     {
                         "label": "margin",
-                        "field": "margin",
+                        "field": "prop-margin",
                         "fieldType": "prop"
                     },
                     {
                         "label": "padding",
-                        "field": "padding",
+                        "field": "prop-padding",
                         "fieldType": "prop"
                     }
                 ]
