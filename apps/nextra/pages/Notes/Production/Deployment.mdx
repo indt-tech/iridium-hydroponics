@@ -33,7 +33,7 @@ To ensure all traffic uses HTTPS, redirect HTTP traffic to HTTPS, utilizing ipta
 
 1. Redirect from port 80 to 443 (if using HTTPS throughout):
 ```bash
-sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 443
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8000
 ```
 This rule redirects all HTTP traffic to HTTPS, ensuring secure communication.
 
