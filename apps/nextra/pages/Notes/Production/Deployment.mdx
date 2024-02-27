@@ -43,6 +43,20 @@ sudo iptables -t nat -L
 ```
 Verify that your redirection rule is correctly listed.
 
+### Delete a Specific Rule by Number
+
+First, list the rules with line numbers to identify the specific rule you want to delete. For example, to view the prerouting rules in the NAT table with line numbers, use:
+
+```bash
+sudo iptables -t nat -L PREROUTING --line-numbers
+```
+
+Assuming the rule you want to remove is number 2 in the PREROUTING chain, you would use:
+
+```bash
+sudo iptables -t nat -D PREROUTING 2
+```
+
 ### Persist iptables Rules (if needed)
 
 Iptables rules are not automatically saved across reboots. To make them persistent:
