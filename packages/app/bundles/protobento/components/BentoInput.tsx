@@ -24,8 +24,8 @@ type BentoInputProps = {
     rightButton?: any,
     leftButtonProps?: ButtonProps,
     rightButtonProps?: ButtonProps,
-    onRightButtonPress: any,
-    onLeftButtonPress: any
+    onRightButtonPress?: any,
+    onLeftButtonPress?: any
 }
 export function BentoInput({
     size = "$3",
