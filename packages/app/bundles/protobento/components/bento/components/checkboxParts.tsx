@@ -101,7 +101,7 @@ const CheckboxesImp = <K extends string>(
 
   return (
     <CheckboxesContext.Provider values={values} onValuesChange={onValuesChange}>
-      <View {...rest} />
+      <View flexDirection='column' {...rest} />
     </CheckboxesContext.Provider>
   )
 }
@@ -138,7 +138,7 @@ const CardFrame = styled(View, {
         width: '100%',
         borderRadius: '$4',
         padding: '$3',
-        backgroundColor: '$background',
+        backgroundColor: '$backgroundTransparent',
         borderColor: '$borderColor',
         borderWidth: 1,
         focusStyle: {
