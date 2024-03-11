@@ -17,7 +17,7 @@ type BentoStackCheckboxesProps = {
     title?: string,
     subtitle?: string,
     setState?: (newState: Record<string, boolean>) => void,
-    mode: "horizontal" | "vertical"
+    mode?: "horizontal" | "vertical"
 }
 
 export function BentoStackCheckboxes({ mode="horizontal", items = [], title, subtitle, setState = () => { }, ...props }: BentoStackCheckboxesProps & StackProps) {
