@@ -9,8 +9,6 @@ import React from "react";
 const isProtected = Protofy("protected", false);
 
 const Home = (props) => {
-  const themeName = useThemeName()
-
   return (
     <Page id="home-page">
       <DefaultLayout title="Iridium Hydroponics " description="Made with love from Barcelona" footer={false} tintSwitcher={false}>
@@ -25,9 +23,9 @@ const Home = (props) => {
           </YStack>
           <YStack gap="$10" maw="950px" als="center">
             <img src="media/home-cover.png" width="100%" style={{ minHeight: '380px', objectFit: 'cover' }} />
-            <YStack alignSelf="center" position="absolute" top="210px">
+            <YStack alignSelf="center" position="absolute" top="320px">
               <Link href="http://localhost:8080/documentation">
-                <ButtonSimple text margin="$13" size="$3" padding="$4" theme="green" alignSelf="center">
+                <ButtonSimple text={true} size="$3" padding="$4" theme="green" alignSelf="center">
                   go to documentation
                 </ButtonSimple>
               </Link>
