@@ -15,9 +15,9 @@ export default {
     text: (
       <span>
         {new Date().getFullYear()} ©{' '}
-        <a href="https://protofy.xyz" target="_blank">
+        {/* <a href="https://protofy.xyz" target="_blank"> */}
           Iridium Hydroponics
-        </a>
+        {/* </a> */}
       </span>
     )
   }
