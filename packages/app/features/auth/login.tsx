@@ -74,11 +74,12 @@ function SignIn() {
       <YStack miw={300} maw={320} jc="space-between" p="$2" gap="$4">
         <YStack mb="$4">
           <LogoIcon o={0.9}>
-            <ProtofyLogoSVG
+            <img src='/logo.png' style={{width: '100px', height: '100px'}}></img>
+            {/* <ProtofyLogoSVG
               className="tamagui-icon"
               width={600/5}
               height={652/5}
-            />
+            /> */}
           </LogoIcon>
         </YStack>
 

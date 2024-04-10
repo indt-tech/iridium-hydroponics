@@ -5,11 +5,11 @@ import dynamic from 'next/dynamic';
 export const HeaderContents = (props: HeaderContentsProps & { headerTitle?: string }) => {
   //@ts-ignore
   const SessionInfo = dynamic(() => import('./SessionInfo'), { ssr: false })
-  const themeName = useThemeName()
+  const themeName = useThemeName() ?? 'light'
   return <ProtoHeaderContents
     logo={
       <XStack>
-        <img src={'media/logoFull-' + themeName + '.png'} style={{ height: 'auto', width: '100px' }}></img>
+        <img src={'/media/logoFull-' + themeName + '.png'} style={{ height: 'auto', width: '100px' }}></img>
       </XStack>
     }
     rightArea={<XStack ai="center">
