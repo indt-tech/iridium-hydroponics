@@ -13,6 +13,10 @@
 
 # Create your own automatized garden
 
+![imatge](https://github.com/indt-tech/iridium-hydroponics/assets/167331789/47c2ddb6-1757-4ae0-b284-ac4830ca02d3)
+![imatge](https://github.com/indt-tech/iridium-hydroponics/assets/167331789/8033e05b-9ac1-4102-a564-1f1bead0e30a)
+![imatge](https://github.com/indt-tech/iridium-hydroponics/assets/167331789/117df005-16f0-4311-aa96-7bb0a844fe62)
+
 ## Modular System
 A versatile system allowing easy expansion and scalability of hydroponic infrastructure, adapting to farm needs.
 
