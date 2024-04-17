@@ -1,16 +1,13 @@
-<h3 align="center">
-<image height="50" src="https://raw.githubusercontent.com/Protofy-xyz/Protofy/assets/logo-protofy.png">
-</h3>
+
+![imatge](https://github.com/indt-tech/iridium-hydroponics/assets/167331789/60ea4712-fea2-4951-abc3-dc10ad97b187)
+
 
 <h4 align="center">
   <a href="https://github.com/protofy-xyz/protofy/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors-anon/protofy-xyz/protofy?color=yellow&style=flat" alt="contributors" style="height: 20px;">
+    <img src="https://img.shields.io/github/contributors-anon/indt-tech/iridium-hydroponics?color=green&style=flat" alt="contributors" style="height: 20px;">
   </a>
   <a href="https://opensource.org/licenses/mit">
     <img src="https://img.shields.io/badge/mit-blue.svg?style=flat&label=license" alt="license" style="height: 20px;">
-  </a>
-  <a href="https://discord.gg/VpeZxMFfYW">
-    <img src="https://img.shields.io/badge/discord-7289da.svg?style=flat&logo=discord" alt="discord" style="height: 20px;">
   </a>
 </h4>
 
