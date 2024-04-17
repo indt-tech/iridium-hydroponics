@@ -33,6 +33,33 @@ Access real-time updates on the status of your garden, including data on its pro
 ## What is it
 Access a user-friendly platform to control your garden through personalized hardware, tailored to your preferences. Simply log in to the platform to manage and monitor your garden with ease, selecting the hardware that best suits your needs.
 
+# Try it right now
+## Installation
+
+```
+git clone https://github.com/indt-tech/iridium-hydroponics.git
+cd iridium-hydroponics
+```
+
+If you don't have yarn installed globally, you may need to do (first time only):
+
+```
+npm i -g yarn
+```
+
+Start iridium hydroponics in development mode (hot reload)
+
+```sh
+yarn && yarn start-dev
+```
+
+## Access the system
+
+Access the main application within `http://localhost:3000`.
+
+Access the documentation within `http://localhost:8080`. 
+
+*Reminder: If you have problems accessing the services, remember to check your firewall configuration.*
 
 # Created with Protofy.xyz
 Protofy is a Full-Stack, batteries included Low-Code enabled web/app and IoT system with an API system and real time messaging.
