@@ -11,16 +11,28 @@
   </a>
 </h4>
 
-<p align="center">Create your own automatized garden</p> 
+# Create your own automatized garden
 
-# Modular System
+## Modular System
 A versatile system allowing easy expansion and scalability of hydroponic infrastructure, adapting to farm needs.
 
-# Precise Monitoring
+## Precise Monitoring
 Equipped with sensors, our system offers precise monitoring of pH, conductivity, and nutrient levels for optimal growth.
 
-# Smart Farm
+## Smart Farm
 Our platform integrates data management enabling analysis and reporting to optimize farm performance, user-friendly for remote control.
+
+# About the project
+
+## We offer
+The aim is to maximize the use of water and nutrients while increasing crop production per square meter compared to traditional agriculture. This is achieved by automating monitoring and maintenance processes to optimize plant growth. Is also easy to operate, even for users with no previous experience in hydroponics.
+
+## What can you do with it
+Access real-time updates on the status of your garden, including data on its progress. Choose between automated cultivation or manual control based on your preference. Learn the fundamentals of hydroponics with open-source resources tailored to your specific needs.
+
+## What is it
+Access a user-friendly platform to control your garden through personalized hardware, tailored to your preferences. Simply log in to the platform to manage and monitor your garden with ease, selecting the hardware that best suits your needs.
+
 
 # Backed by Protofy.xyz
 Protofy is a Full-Stack, batteries included Low-Code enabled web/app and IoT system with an API system and real time messaging.
