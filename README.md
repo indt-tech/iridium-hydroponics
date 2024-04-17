@@ -11,10 +11,18 @@
   </a>
 </h4>
 
-<p align="center">AI Supercharged LowCode Platform CMS and Framework</p> 
+<p align="center">Create your own automatized garden</p> 
 
-![visual-ui-gif](https://github.com/Protofy-xyz/Protofy/blob/assets/visualui/visualui-2.gif?raw=true)
+# Modular System
+A versatile system allowing easy expansion and scalability of hydroponic infrastructure, adapting to farm needs.
 
+# Precise Monitoring
+Equipped with sensors, our system offers precise monitoring of pH, conductivity, and nutrient levels for optimal growth.
+
+# Smart Farm
+Our platform integrates data management enabling analysis and reporting to optimize farm performance, user-friendly for remote control.
+
+# Backed by Protofy.xyz
 Protofy is a Full-Stack, batteries included Low-Code enabled web/app and IoT system with an API system and real time messaging.
 
 You can use this as a base to fast prototype Apps, webs, IoT systems, automations or APIs.
