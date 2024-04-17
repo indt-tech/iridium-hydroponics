@@ -34,7 +34,7 @@ Access real-time updates on the status of your garden, including data on its pro
 Access a user-friendly platform to control your garden through personalized hardware, tailored to your preferences. Simply log in to the platform to manage and monitor your garden with ease, selecting the hardware that best suits your needs.
 
 
-# Backed by Protofy.xyz
+# Created with Protofy.xyz
 Protofy is a Full-Stack, batteries included Low-Code enabled web/app and IoT system with an API system and real time messaging.
 
 You can use this as a base to fast prototype Apps, webs, IoT systems, automations or APIs.
