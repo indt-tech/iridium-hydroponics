@@ -1,0 +1,64 @@
+# Expose WSL2 IP addres 
+
+## Introduction
+
+When developing mobile applications with React Native and testing them with the Expo Go app, developers using Windows Subsystem for Linux (WSL2) face challenges in connecting the Expo Go app to their development server running inside WSL2. This guide outlines the steps to configure your PC's port proxy settings to bridge this connection seamlessly.
+
+## Prerequisites
+
+- Windows 10 or later with WSL2 installed.
+- Development environment set up in WSL2 (e.g., Node.js, Expo CLI).
+- Expo Go app installed on your mobile device.
+
+## Overview
+
+This guide demonstrates how to forward TCP traffic from a specific port on your Windows host to the corresponding port on your WSL2 instance, using port 19000 as an example.
+
+## Configuration Steps
+
+### 1. Identify WSL2 IP Address
+
+Firstly, find the IP address of your WSL2 instance, which is required to direct the traffic from your Windows machine to WSL2.
+
+```bash
+hostname -I
+```
+
+This command should return an IP address.
+
+### 2. Configure Port Proxy
+
+Next, set up the port proxy to forward traffic from your Windows host to WSL2. This requires administrative privileges.
+
+```bash
+netsh interface portproxy add v4tov4 listenport=19000 listenaddress=0.0.0.0 connectport=19000 connectaddress=(your wsl IP)
+```
+
+Replace `(your wsl IP)` with the IP address you noted earlier. This command configures the system to forward TCP connections on port 19000 to your WSL2 instance. If you are using a different port, remember to change 19000 for you current port. 
+
+### 3. Verify Connection
+
+To confirm that the port proxy is correctly configured:
+
+```bash
+netsh interface portproxy show v4tov4
+```
+
+This command displays all current port proxy configurations. Ensure your settings for port 19000 are correctly listed. It should return something similar to: 
+
+```bash
+ Listen on ipv4:     Connect to ipv4: 
+| Address  | Port  | Address          | Port  |
+| :------- | :---: | :--------------: | ----: |
+| 0.0.0.0  | 19000 | (your wsl2 port) | 19000 |
+```
+
+## Testing the Connection
+
+With the configuration complete, run your development server inside WSL2. Open the Expo Go app on your mobile device and connect to the server using your Windows machine's IP address and port 19000. The app should load and reflect any changes made in your development environment.
+
+*Ensure your Windows Firewall settings allow incoming connections on port 19000, and check that the IP address of your WSL2 instance hasn't changed.*
+
+## Conclusion
+
+This guide provided a step-by-step approach to setting up a port proxy on your Windows machine, enabling a seamless connection between the Expo Go app and your WSL2-based development server. This setup is crucial for a smooth development and testing process for mobile applications built with Expo and React Native.
