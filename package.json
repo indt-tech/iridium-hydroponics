@@ -36,7 +36,6 @@
     "test:global": "NODE_ENV=development FORCE_COLOR=1 yarn workspace tests test",
     "test:e2egen": "NODE_ENV=development npx playwright codegen",
     "test:protolib": "FORCE_COLOR=1 yarn workspace protolib test",
-    "create-environment": "node copy.js",
     "fix": "manypkg fix",
     "check-deps": "check-dependency-version-consistency ."
   },
