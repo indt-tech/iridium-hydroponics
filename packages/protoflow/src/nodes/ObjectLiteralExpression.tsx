@@ -6,7 +6,7 @@ import { generateId } from '../lib/IdGenerator';
 import { FlowStoreContext } from "../store/FlowsStore";
 import { TableProperties } from 'lucide-react';
 import { useNodeColor } from '../diagram/Theme';
-import { dumpArgumentsData, getArgumentsData } from './CallExpression';
+import { getArgumentsData, dumpArgumentsData } from '../utils/typesAndKinds';
 
 export const ObjectFactory = (objectType) => {
     const component = (node) => {
@@ -29,7 +29,7 @@ export const ObjectFactory = (objectType) => {
         );
     }
     component.category = "data structures"
-    component.keyWords = ["object", 'data']
+    component.keywords = ["object", 'data']
     component.getData = (node, data, nodesData, edges, mode) => {
         return {
             ...node[objectType == 'typeLiteral' ? 'getMembers' : 'getProperties']().reduce((obj, prop, i) => {

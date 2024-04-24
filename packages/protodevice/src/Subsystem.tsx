@@ -4,22 +4,26 @@ import { XStack, YStack, Text, Paragraph, Button, Input, Spinner } from '@my/ui'
 import { ElevatedArea, ContainerLarge, Tinted, Chip, useFetch } from 'protolib';
 import { DeviceSubsystemMonitor, getPeripheralTopic } from 'protolib/bundles/devices/devices/devicesSchemas';
 
-const Monitor = ({deviceName, monitorData}) => {
+const Monitor = ({deviceName, monitorData, subsystem}) => {
     const monitor = new DeviceSubsystemMonitor(deviceName, subsystem.name, monitorData)
     // Define the state hook outside of JSX mapping
     const [value, setValue] = useState<any>(undefined);
     //const value = 'test'
     const { message } = useSubscription(monitor.getEndpoint())
     const [result, loading, error] = useFetch(monitor.getValueAPIURL())
-    
+    const [scale, setScale] = useState(1);
+
     React.useEffect(() => {
         setValue(message?.message?.toString())
+        setScale(1.15);
+        setTimeout(() => {
+          setScale(1);
+        }, 200);
     }, [message])
-
     return (
         <XStack gap="$3">
-            <Text marginLeft={4} textAlign={"left"}>{monitor.getLabel()}: </Text>
-            {(loading || (value === undefined && result?.value === undefined)) ? <Spinner color="$color7" /> : <Chip text={`${value??result?.value} ${monitor.getUnits()}`}></Chip> }
+            <Text flex={1} marginLeft={4} textAlign={"left"}>{monitor.getLabel()}: </Text>
+            {(loading || (value === undefined && result?.value === undefined)) ? <Spinner color="$color7" /> : <Chip color={value === undefined ? 'gray': '$color5'} text={`${value??result?.value} ${monitor.getUnits()}`} scale={scale} animation="bouncy" ></Chip> }
         </XStack>
     );
 }
@@ -76,7 +80,7 @@ const subsystem = ({subsystem, deviceName}) => {
     });
 
     const monitorLabels = subsystem.monitors?.map((monitorData, key) => {
-        return <Monitor key={key} deviceName={deviceName} monitorData={monitorData} />
+        return <Monitor key={key} deviceName={deviceName} monitorData={monitorData} subsystem={subsystem} />
     });
 
     return (
@@ -88,7 +92,7 @@ const subsystem = ({subsystem, deviceName}) => {
                         {actionButtons}
                     </XStack>
 
-                    <XStack alignItems={'left'} gap="$3">
+                    <XStack gap="$3" flexWrap='wrap'>
                         {monitorLabels}
                     </XStack>
                 </YStack>

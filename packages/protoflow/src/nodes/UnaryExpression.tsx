@@ -28,13 +28,13 @@ export const UnaryExpressionFactory = (mode:"pre" | "post") => {
         );
     }
     UnaryExpression.category = "operators"
-    UnaryExpression.keyWords = ["increment", "--", "++","decrement"]
+    UnaryExpression.keywords = ["increment", "--", "++","decrement"]
     UnaryExpression.getData = (node, data, nodesData, edges) => {
         const opTable = {
-            '40':'-',
-            '45': '++',
-            '46': '--',
-            '53': '!'
+            '41':'-',
+            '46': '++',
+            '47': '--',
+            '54': '!'
         }
 
         return {

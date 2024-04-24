@@ -15,9 +15,10 @@ import useTheme from './diagram/Theme';
 import { DataOutput } from './lib/types';
 import { read } from './lib/memory';
 import NodeSelect from './diagram/NodeSelect';
-import { X, ChevronUp, AlertCircle, Type, Hash, Braces, ToggleLeft } from 'lucide-react';
+import { X, ChevronUp, AlertCircle } from 'lucide-react';
 import { useProtoflow, useProtoEdges } from './store/DiagramStore';
 import { getFieldValue, getDataFromField } from './utils';
+import { getKindIcon, getNextKind, getTypeByKind } from './utils/typesAndKinds';
 
 export interface Field {
     field: string,
@@ -59,7 +60,7 @@ export const DeleteButton = ({ id, left = false, field }) => {
 }
 
 
-export const NodeInput = ({ id, disabled, post = (t) => t, pre = (t) => t, onBlur, field, children, style = {}, editing = false }: any) => {
+export const NodeInput = ({ id, disabled, post = (t) => t, pre = (t) => t, onBlur, field, children, style = {}, editing = false, options=[]}: any) => {
     const useFlowsStore = useContext(FlowStoreContext)
     const setNodeData = useFlowsStore(state => state.setNodeData)
     const { setNodes } = useProtoflow()
@@ -102,7 +103,8 @@ export const NodeInput = ({ id, disabled, post = (t) => t, pre = (t) => t, onBlu
 
     const _onBlur = () => {
         if (!disabled) {
-            setNodeData(id, { ...nodeData, [field]: post(tmpInputValue) })
+            const val = post(tmpInputValue)
+            setNodeData(id, { ...nodeData, [field]: val })
             dataNotify({ id: id, paramField: field, newValue: tmpInputValue })
         }
         if (onBlur) onBlur(tmpInputValue);
@@ -123,6 +125,7 @@ export const NodeInput = ({ id, disabled, post = (t) => t, pre = (t) => t, onBlu
                 value={tmpInputValue}
                 placeholder="default"
                 onChange={t => setTmpInputValue(t.target.value)}
+                options={options}
             />
             {children}
         </div>
@@ -171,7 +174,7 @@ const HandleField = ({ id, param, index = 0, portId = null, editing = false, onR
             return myVar;
     }
 
-    const [checked, setChecked] = React.useState(stringToBolean(nodeData[param.field]));
+    const [checked, setChecked] = React.useState(stringToBolean(getFieldValue(param.field, nodeData)));
     //end of boolean
 
     //range
@@ -290,23 +293,16 @@ const HandleField = ({ id, param, index = 0, portId = null, editing = false, onR
                     <input type='checkbox'
                         onChange={() => {
                             dataNotify({ id: id, paramField: param.field, newValue: !checked });
-                            setNodeData(id, { ...nodeData, [param.field]: getDataFromField(!checked, param.field, nodeData) })
+                            setNodeData(id, { ...nodeData, [param.field]: getDataFromField(!checked, param.field, nodeData, {}, 'FalseKeyword') })
                             setChecked(!checked)
                         }}
                         checked={checked ? true : false}
                         style={{ all: "revert", width: nodeFontSize, margin: "2px 0px 2px 0px", accentColor: interactiveColor, transform: `scale(${nodeFontSize / 15})`, marginRight: '5px' }} />
                 </span>
             default:
-                const type = nodeData[param.field]?.kind
-                const icons = {
-                    "StringLiteral": Type,
-                    "NumericLiteral": Hash,
-                    "TrueKeyword": ToggleLeft,
-                    "ObjectLiteralExpression": Braces,
-                    "FalseKeyword": ToggleLeft
-                }
+                const fieldKind = nodeData[param.field]?.kind
                 return <>
-                    {type && icons[type]
+                    {getTypeByKind(fieldKind)
                         ? <div
                             style={{ padding: '8px', justifyContent: 'center', position: 'absolute', zIndex: 100, cursor: 'pointer' }}
                             onClick={() => {
@@ -314,12 +310,12 @@ const HandleField = ({ id, param, index = 0, portId = null, editing = false, onR
                                     ...nodeData, [param.field]: {
                                         ...nodeData[param.field],
                                         // TODO: Changes kind names from helper instead of icon list
-                                        kind: Object.keys(icons)[(Object.keys(icons).indexOf(type) + 1) % (Object.keys(icons).length - 1)]
+                                        kind: getNextKind(fieldKind)
                                     }
                                 })
                             }}
                         >
-                            {React.createElement(icons[type], { size: 16, color: interactiveColor })}
+                            {React.createElement(getKindIcon(fieldKind), { size: 16, color: interactiveColor })}
                         </div>
                         : <></>}
                     <NodeInput
@@ -332,7 +328,7 @@ const HandleField = ({ id, param, index = 0, portId = null, editing = false, onR
                         disabled={disabled || param.isDisabled}
                         style={{
                             marginRight: ["case", "child"].includes(param.fieldType) ? "20px" : "0px",
-                            paddingLeft: type && icons[type] ? "30px" : undefined
+                            paddingLeft: getTypeByKind(fieldKind) ? "30px" : undefined
                         }}>
                         {param.error ? <div style={{ alignItems: 'center', marginTop: '5px', display: 'flex' }}>
                             <AlertCircle size={"14px"} color='red' style={{ alignSelf: 'center', marginRight: '5px' }} />
@@ -597,7 +593,7 @@ const Node = ({ adaptiveTitleSize = true, modeParams = 'column', mode = 'column'
     const isRendered = nodeData?._metadata?.layouted
     if (node.id && !isRendered) extraStyle.opacity = '0'
 
-    console.log('meta data: ', nodeData?._metadata)
+    //console.log('meta data: ', nodeData?._metadata)
 
     return (
         <DiagramNode

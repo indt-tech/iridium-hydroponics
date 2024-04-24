@@ -11,8 +11,8 @@ export function SignInPage(props) {
   return (
     <Page>
       <DefaultLayout
-        title="Protofy"
-        description="Made with love from Barcelona"
+        title="Iridium Hydroponics"
+        description="login"
         footer={null}>
         <YStack f={1} overflow={'hidden'}>
           <Section containerProps={{ f: 1 }} sectionProps={{ index: 0, p: 0 }}>

@@ -9,10 +9,11 @@ import {Protofy} from 'protolib/base'
 import {Objects} from 'app/bundles/objects'
 import {DataView, API, AdminPage, PaginatedDataSSR } from 'protolib'
 import { Tag } from '@tamagui/lucide-icons'
+import { context } from "app/bundles/uiContext";
+import { useRouter } from "next/router";
 
 const Icons =  {}
 const isProtected = Protofy("protected", {{protected}})
-const { actionFetch } = API;
 const {name, prefix} = Objects.{{_object}}.getApiOptions()
 const sourceUrl = prefix + name
 

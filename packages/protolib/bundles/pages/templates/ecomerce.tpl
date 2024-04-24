@@ -4,9 +4,10 @@ from "protolib";
 import { DefaultLayout } from "../../../layout/DefaultLayout";
 import { Protofy } from "protolib/base";
 import { Paragraph } from '@my/ui';
+import { context } from "app/bundles/uiContext";
+import { useRouter } from "next/router";
 
 const isProtected = Protofy("protected", {{protected}})
-const { actionFetch } = API;
 
 const CURRENCY = "$"
 const products = [
@@ -76,6 +77,10 @@ const products = [
 ]
 
 const PageComponent = (props) => {
+    const router = useRouter();
+    context.onRender(() => {
+
+    });
     return (
     <Page>
         <DefaultLayout headerTitle="Protofy-Store" title="ProtofyStore" description="Made with love from Barcelona"

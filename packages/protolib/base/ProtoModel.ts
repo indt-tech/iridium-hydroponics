@@ -40,7 +40,7 @@ export abstract class ProtoModel<T extends ProtoModel<T>> {
         this.schema = schema
         this.objectSchema = ProtoSchema.load(this.schema)
         this.modelName = modelName?.toLowerCase() ?? 'unknown'
-        this.idField = this.objectSchema.is('id').getFirst('id') ?? 'id'
+        this.idField = this.objectSchema.is('id').getLast('id') ?? 'id'
         this.indexes = {
             primary: this.idField,
             keys: this.objectSchema.is('indexed').getFields()
@@ -94,7 +94,7 @@ export abstract class ProtoModel<T extends ProtoModel<T>> {
     }
 
     static getIdField() {
-        return this.getObjectSchema().is('id').getFirst('id') ?? 'id'
+        return this.getObjectSchema().is('id').getLast('id') ?? 'id'
     }
 
     getId() {
@@ -125,6 +125,28 @@ export abstract class ProtoModel<T extends ProtoModel<T>> {
     }
 
     list(search?, session?, extraData?, params?): any {
+        
+        if(params && params.filter) {
+            const allFiltersMatch = Object.keys(params.filter).every(key => {
+                if(params.filter[key].from || params.filter[key].to) {
+                    let valid = true
+                    if(params.filter[key].from && this.data && this.data[key] < params.filter[key].from) {
+                        valid = false
+                    }
+    
+                    if(params.filter[key].to && this.data && this.data[key] > params.filter[key].to) {
+                        valid = false
+                    }
+
+                    return valid
+                } else {
+                    return this.data && this.data[key] == params.filter[key];
+                }
+            });
+
+            if(!allFiltersMatch) return
+        }
+
         if (search) {
             const { parsed, searchWithoutTags } = parseSearch(search);
 
@@ -214,6 +236,12 @@ export abstract class ProtoModel<T extends ProtoModel<T>> {
 
     static unserialize(data: string, session?: SessionDataType): ProtoModel<any> {
         return this._newInstance(JSON.parse(data), session);
+    }
+
+    static getApiEndPoint(): string {
+        const options = this.getApiOptions()
+        const prefix = options.prefix.endsWith('/') ? options.prefix.slice(0, -1) : options.prefix;
+        return prefix + '/' + options.name;
     }
 
     static load(data: any, session?: SessionDataType): ProtoModel<any> {

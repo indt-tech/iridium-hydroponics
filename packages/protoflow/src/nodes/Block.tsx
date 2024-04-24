@@ -152,7 +152,7 @@ const Block = (node) => {
     );
 }
 
-Block.keyWords = ["block", "{}", "CaseClause", 'group']
+Block.keywords = ["block", "{}", "CaseClause", 'group']
 Block.category = "common"
 Block.defaultHandle = PORT_TYPES.flow + 'block0'
 Block.getData = (node, data, nodesData, edges, mode) => {
@@ -216,7 +216,7 @@ Block.dump = (node, nodes, edges, nodesData, metadata = null, enableMarkers = fa
 
 
     const blockStartSeparator = body.length && body[0].trivia.includes("\n") ? "" : "\n"
-    const value = (node.type == 'Block' ? "{"+blockStartSeparator : '') + body.map(b => b.code).join("") + (node.type == 'Block' ? "\n"+spacing.repeat(Math.max(level-1, 0))+"}" : '')
+    const value = (node.type == 'Block' ? "{"+blockStartSeparator : '') + body.map(b => b.code + ";").join("") + (node.type == 'Block' ? "\n"+spacing.repeat(Math.max(level-1, 0))+"}" : '')
     return value
 }
 

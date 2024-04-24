@@ -17,7 +17,6 @@ export const VariableDeclarationListNodeFactory = (declarationType) => {
         const declarations = Object.keys(nodeData).filter(key => key.startsWith('declarationName'))
         const declarationArr = declarations.length ? declarations : ['declarationName1']
 
-        console.log('mobx: ', nodeData)
         //@ts-ignore
         const nodeParams: Field[] = [
             { label: 'Type', field: 'type', type: 'select', data: ['let', 'const', 'var'], static: true }
@@ -36,7 +35,7 @@ export const VariableDeclarationListNodeFactory = (declarationType) => {
         );
     }
     component.category = "identifiers"
-    component.keyWords = ["const", "let", "var"]
+    component.keywords = ["const", "let", "var"]
     component.getData = (node, data, nodesData, edges) => {
         const type = node.getChildren()[0].getText(); // const, let, var
         const declarations = node.getDeclarations().reduce((total, dec, i) => {
@@ -89,7 +88,6 @@ export const VariableDeclarationListNodeFactory = (declarationType) => {
             let typeKey = `type${i + 1}`
             let opTriviaKey = `opTrivia${i+1}`
             let value = dumpConnection(node, "target", valkey, PORT_TYPES.data, getValueTrivia(data, valkey), edges, nodes, nodesData, metadata, enableMarkers, dumpType, level)
-            console.log('value in vardec: ['+value+']')
             return total + 
                     data[param] + 
                     getTsType(data[typeKey]) + 
