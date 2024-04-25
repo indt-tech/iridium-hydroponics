@@ -3,7 +3,7 @@ import { sleep } from "protodevice/src/sleep";
 import { Build, FlashError } from "protodevice/src/const";
 import { manifest } from "protodevice/src/manifest";
 
-const onlineCompilerUrl = "https://firmware.protofy.xyz/api/v1";
+
 let port;
 
 const resetTransport = async (transport: Transport) => {
@@ -43,7 +43,7 @@ export const connectSerialPort = async () => {
     }
 }
 
-export const flash = async (cb) => {
+export const flash = async (cb, deviceName, compileSessionId) => {
     cb({ message: 'Please hold "Boot" button of your ESP32 board.' })
     let build: Build | undefined;
     let chipFamily: Build["chipFamily"];
@@ -93,7 +93,7 @@ export const flash = async (cb) => {
     const filePromises = build.parts.map(async (part) => {
 
         // const url = "http://bo-firmware.protofy.xyz/api/v1" + "/electronics/download.bin?configuration=" + "test.yaml" + "&type=firmware-factory.bin"
-        const url = onlineCompilerUrl + "/device/download?configuration=" + "test.yaml" + "&type=firmware-factory.bin"
+        const url = downloadDeviceFirmwareEndpoint(deviceName, compileSessionId)
 
         const resp = await fetch(url);
         if (!resp.ok) {
@@ -174,4 +174,27 @@ export const flash = async (cb) => {
     console.log("DISCONNECT");
     await transport.disconnect();
     cb({ message: "All done!" })
+}
+
+
+const onlineCompiler = "compile.protofy.xyz";
+const secured = true;
+const downloadDeviceFirmwareEndpoint = (targetDevice, compileSessionId) => {
+    return (`http${secured?"s":""}://${onlineCompiler}/api/v1/device/download/${targetDevice}?compileSessionId=${compileSessionId}`)
+};
+
+export const onlineCompilerSecureWebSocketUrl = () => {
+    return (`ws${secured?"s":""}://${onlineCompiler}/websocket`)
+};
+
+export const postYamlApiEndpoint = (targetDevice) => {
+    return (`http${secured?"s":""}://${onlineCompiler}/api/v1/device/edit/${targetDevice}`);
+};
+
+export const compileActionUrl = (targetDevice, compileSessionId) => {
+    return (`http${secured?"s":""}://${onlineCompiler}/api/v1/device/compile/${targetDevice}?compileSessionId=${compileSessionId}`)
+};
+
+export const compileMessagesTopic = (targetDevice) => {
+    return (`device/compile/${targetDevice}`);
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNode } from "@protocraft/core";
+import { useNode, useEditor } from "@protocraft/core";
 import { CopyPlus } from '@tamagui/lucide-icons'
 import { H4 } from 'tamagui'
 import Center from '../components/Center'
@@ -24,17 +24,25 @@ export const getComponentWrapper = (importName) => (Component, icon, name, defau
     const UiComponent = (props) => {
         let {
             connectors: { connect },
-            setProp
+            setProp,
+            id
         } = useNode((node) => ({
             selected: node.events.selected,
             custom: node.data.custom,
         }));
+        const { actions } = useEditor()
+
         return <Component ref={connect} {...visualUIOnlyFallbackProps} {...props}>
             {
                 editableText && (typeof props.children == 'string' || typeof props.children == 'number')
                     ? <ContentEditable
                         innerRef={connect}
                         html={props.children.toString()}
+                        onKeyDown={e => {
+                            if (["Backspace", "Delete"].includes(e.code) && e.target?.innerText == "") {
+                                actions.delete(id)
+                            }
+                        }}
                         onChange={(e) => {
                             setProp((prop) => (prop.children = e.target.value), 500);
                         }}
@@ -51,15 +59,29 @@ export const getComponentWrapper = (importName) => (Component, icon, name, defau
         }
     }
 
+    var data = { context: {}, kinds: {}, props: {} }
+
+    Object.keys(defaultProps).forEach(prop => {
+        var value = defaultProps[prop].value
+        if (defaultProps[prop].kind && value) {
+            data.kinds[value] = defaultProps[prop].kind
+            data.context[value] = value
+            data.props[value] = value
+        } else {
+            data.props[prop] = defaultProps[prop]
+        }
+    }, {})
+
     UiComponent.craft = {
-        related: {
-        },
+        related: {},
         custom: {
             icon,
             ...importInfo,
-            ...uiData['custom']
+            context: data.context,
+            kinds: data.kinds,
+            ...uiData['custom'],
         },
-        props: defaultProps,
+        props: data.props,
         displayName: name,
         rules: {
             ...defaultRules,

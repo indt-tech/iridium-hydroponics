@@ -49,7 +49,12 @@ type AutoAPIOptions = {
     onAfterUpdate?: Function,
     onBeforeDelete?: Function,
     onAfterDelete?: Function,
-    skipDatabaseIndexes?: boolean
+    skipDatabaseIndexes?: boolean,
+    dbOptions?: {
+        batch?: boolean,
+        batchLimit?: number,
+        batchTimeout?: number
+    }
 }
 
 export const AutoAPI = ({
@@ -79,10 +84,19 @@ export const AutoAPI = ({
     onAfterUpdate = async (data, session?, req?) => data,
     onBeforeDelete = async (data, session?, req?) => data,
     onAfterDelete = async (data, session?, req?) => data,
-    skipDatabaseIndexes
+    skipDatabaseIndexes,
+    dbOptions = {}
 }: AutoAPIOptions) => (app, context) => {
     const dbPath = '../../data/databases/' + (dbName ? dbName : modelName)
-    connectDB(dbPath, initialData, skipDatabaseIndexes? {} : {indexes: modelType.getIndexes()}) //preconnect database
+    connectDB(dbPath, initialData, skipDatabaseIndexes? {} : {
+        indexes: modelType.getIndexes(),
+        dbOptions: {
+            batch: false,
+            batchLimit: 100,
+            batchTimeout: 5000,
+            ...dbOptions
+        }     
+    }) //preconnect database
     const _list = (req, allResults, _itemsPerPage) => {
         const page = Number(req.query.page) || 0;
         const orderBy: string = req.query.orderBy as string;
@@ -115,23 +129,21 @@ export const AutoAPI = ({
         const allResults: any[] = [];
 
         const search = req.query.search;
+        const filter = req.query.filter;
         const preListData = typeof extraData?.prelist == 'function' ? await extraData.prelist(session, req) : (extraData?.prelist ?? {})
         const parseResult = async (value) => {
-            // console.log("****************", value)
             const model = modelType.unserialize(value, session);
             const extraListData = typeof extraData?.list == 'function' ? await extraData.list(session, model, req) : (extraData?.list ?? {})
             const listItem = await model.listTransformed(search, transformers, session, { ...preListData, ...extraListData }, await onBeforeList(req.query, session, req));
             return listItem
         }
         const _itemsPerPage = Math.max(Number(req.query.itemsPerPage) || (itemsPerPage ?? 25), 1);
-        if(!skipDatabaseIndexes && db.hasCapability && db.hasCapability('pagination')) {
+        if(!search && !filter && !skipDatabaseIndexes && db.hasCapability && db.hasCapability('pagination')) {
             const indexedKeys = await db.getIndexedKeys()
-
             const total = parseInt(await db.count(), 10)
             const page = Number(req.query.page) || 0;
             const orderBy: string = req.query.orderBy ? req.query.orderBy as string : modelType.getIdField()
             const orderDirection = req.query.orderDirection || 'asc';
-
             if(indexedKeys.length && indexedKeys.includes(orderBy)) {
                 const result = {
                     itemsPerPage:_itemsPerPage,
@@ -255,32 +267,37 @@ export const AutoAPI = ({
             res.status(401).send({ error: "Unauthorized" })
             return
         }
-
+        
         const db = getDB(dbPath, req, session)
-        const entityModel = await modelType.unserialize(await db.get(req.params.key), session)
-
+        const rawEntityData = await db.get(req.params.key)
+        
         if (!paginatedRead) {
-            onBeforeDelete(await db.get(req.params.key), session, req)
-            await db.del(req.params.key)
+            onBeforeDelete(rawEntityData, session, req)
+            await db.del(req.params.key, rawEntityData)
         } else {
             await onBeforeDelete("{}", session, req)
-            await db.del(req.params.key)
+            await db.del(req.params.key, rawEntityData)
         }
-
-        context && context.mqtt && context.mqtt.publish(entityModel.getNotificationsTopic('delete'), entityModel.getNotificationsPayload())
-        if (!disableEvents) {
-            generateEvent({
-                path: modelName + '/delete', //event type: / separated event category: files/create/file, files/create/dir, devices/device/online
-                from: 'api', // system entity where the event was generated (next, api, cmd...)
-                user: session.user.id, // the original user that generates the action, 'system' if the event originated in the system itself
-                payload: {
-                    who: '-', //TODO: wire session in dataview to api,
-                    id: entityModel.getId(),
-                    data: entityModel.read()
-                } // event payload, event-specific data
-            }, getServiceToken())
+        try {
+            const entityModel = await modelType.unserialize(rawEntityData, session)
+            context && context.mqtt && context.mqtt.publish(entityModel.getNotificationsTopic('delete'), entityModel.getNotificationsPayload())
+            if (!disableEvents) {
+                generateEvent({
+                    path: modelName + '/delete', //event type: / separated event category: files/create/file, files/create/dir, devices/device/online
+                    from: 'api', // system entity where the event was generated (next, api, cmd...)
+                    user: session.user.id, // the original user that generates the action, 'system' if the event originated in the system itself
+                    payload: {
+                        who: '-', //TODO: wire session in dataview to api,
+                        id: entityModel.getId(),
+                        data: entityModel.read()
+                    } // event payload, event-specific data
+                }, getServiceToken())
+            }
+            logger[logLevel ?? 'info']({ data: entityModel.read() }, modelName + " deleted: " + entityModel.getId())
+        } catch (e){
+            logger.error({e}, "Error during delete notification")
         }
-        logger[logLevel ?? 'info']({ data: entityModel.read() }, modelName + " deleted: " + entityModel.getId())
+        
         res.send(await onAfterDelete({ "result": "deleted" }, session, req))
     }));
 }

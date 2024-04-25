@@ -64,8 +64,8 @@ export const DefaultLayout = React.forwardRef(({
   return (
     <Stack f={1} ref={ref} height="100%" {...props}>
       <NextSeo
-        // title={title}
-        // description={description}
+        title={title}
+        description={description}
         openGraph={openGraph}
         {...seoProps}
       />

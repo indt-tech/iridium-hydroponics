@@ -1,0 +1,34 @@
+import { Steps } from 'nextra/components'
+
+# SYNCHRONIZATION WITH THE UPSTREAM REPOSITORY
+
+Keeping your fork up to date with the original repository (upstream) is crucial to ensure your work is aligned with the latest changes and improvements. Here, we explain how to set up and execute synchronization with the upstream repository using Yarn and Git.
+
+## Initial Setup
+Before you can synchronize your fork with the upstream, you need to configure the upstream repository as a remote in your local repository. This is done only once per repository.
+
+### Adding the Upstream Repository
+Use the following command to add the upstream repository as a remote. Ensure you are in your local project directory.
+
+```bash
+yarn sync-setup
+```
+This command executes `git remote add upstream git@github.com:Protofy-xyz/Protofy-internal.git`, adding a new remote named upstream pointing to the original repository.
+
+## Synchronizing with Upstream
+Once the upstream remote is configured, you can synchronize your fork to incorporate changes from the upstream repository into your main branch.
+
+### Executing the Synchronization
+To synchronize your fork with the upstream, run the following command:
+```bash
+yarn sync
+```
+This command performs two sequential operations:
+<Steps>
+### Fetch Upstream:
+`git fetch upstream` - This command retrieves all changes from the upstream repository without merging them into your current working branch.
+
+### Merge Upstream/Main:
+`git merge upstream/main` - After fetching the changes, this command merges the upstream's main branch into your current working branch. If there are conflicts, Git will prompt you to resolve them before completing the merge.
+</Steps>
+

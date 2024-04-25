@@ -6,6 +6,7 @@ import { FlowStoreContext } from "../store/FlowsStore";
 import { ArrowUpRight } from 'lucide-react';
 import { useNodeColor } from '../diagram/Theme';
 import { SyntaxKind } from 'ts-morph';
+import { getArgumentsData, dumpArgumentsData } from '../utils/typesAndKinds';
 
 const CallExpression = (node) => {
     const { id, type } = node
@@ -30,14 +31,14 @@ const CallExpression = (node) => {
     ) as Field[]
 
     return (
-        <Node icon={ArrowUpRight} node={node} isPreview={!id} title={(nodeData.to ? nodeData.to : 'x') + '(' + (paramsArray.map(p => nodeData[p] ? dumpArgumentsData(nodeData[p]) : '...').join(',')) + ')'} id={id} color={color}>
+        <Node icon={ArrowUpRight} node={node} isPreview={!id} title={(nodeData.to ? nodeData.to : 'x') + '(' + (!id?'':(paramsArray.map(p => nodeData[p] ? dumpArgumentsData(nodeData[p]) : '...').join(',')))+ ')'} id={id} color={color}>
             <NodeParams id={id} params={nodeParams} />
             <NodeParams id={id} params={[{ label: 'Await', field: 'await', type: 'boolean', static: true }]} />
             <AddPropButton keyId={'param-' + nextId} id={id} nodeData={nodeData} />
         </Node>
     );
 }
-CallExpression.keyWords = ['call', 'function', 'execute']
+CallExpression.keywords = ['call', 'function', 'execute']
 CallExpression.category = 'common'
 CallExpression.defaultHandle = PORT_TYPES.data + 'to'
 CallExpression.getData = (node, data, nodesData, edges) => {
@@ -80,6 +81,8 @@ CallExpression.dump = (node, nodes, edges, nodesData, metadata = null, enableMar
     const keys = Object.keys(data).sort()
 
     const params = keys.filter(key => key.startsWith('param')).sort((a, b) => a.localeCompare(b, 'en', { numeric: true })).map((param) => {
+        if(data[param]?._dump) return data[param]._dump(data, level)
+
         let part;
         const fallback = data._fallBack ? data._fallBack.find(f => f.port == param) : null
 
@@ -94,7 +97,7 @@ CallExpression.dump = (node, nodes, edges, nodesData, metadata = null, enableMar
             part = dumpConnection(node, "target", param, PORT_TYPES.data, null, edges, nodes, nodesData, metadata, enableMarkers, dumpType, level)
             if (!part) {
                 part = dumpArgumentsData(data[param])
-            } 
+            }
         }
         return part
     })
@@ -104,39 +107,3 @@ CallExpression.dump = (node, nodes, edges, nodesData, metadata = null, enableMar
 }
 
 export default memo(CallExpression)
-
-export function getArgumentsData(node: any): any {
-    let atrVal
-    var kind = node?.getKindName()
-
-    switch (kind) {
-        case 'StringLiteral':
-        case 'NumericLiteral':
-        case 'TrueKeyword':
-        case 'FalseKeyword':
-            atrVal = node?.getLiteralValue();
-            break
-        case 'Identifier':
-            atrVal = node.getText()
-            break
-        default:
-            return
-    }
-    return { value: atrVal, kind }
-}
-
-export function dumpArgumentsData(argData: { kind: string, value: any }): any {
-    if (!argData) return
-    const argumentKind = argData.kind
-    var value = argData.value
-    switch (argumentKind) {
-        case 'StringLiteral':
-            return '"' + value + '"'
-        case 'NumericLiteral':
-        case 'TrueKeyword':
-        case 'FalseKeyword':
-        case 'Identifier':
-        default:
-            return String(value)
-    }
-}

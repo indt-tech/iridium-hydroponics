@@ -4,7 +4,7 @@ import { AutoModel, ProtoModel, SessionDataType } from 'protolib/base'
 import path from 'path'
 
 export const DevicesSchema = Schema.object({
-  name: z.string().hint("Device name").static().regex(/^[a-z0-9A-Z]+$/, "Only lower case chars or numbers").id().search(),
+  name: z.string().hint("Device name").static().regex(/^[a-z0-9]+$/, "Only lower case chars or numbers").id().search(),
   deviceDefinition: z.string().hidden(),
   substitutions: z.record(z.string().optional(), z.any().optional()).optional().hidden(),
   subsystem: z.record(z.string(), z.any()).optional().hidden(),
@@ -52,7 +52,7 @@ export class DeviceSubsystemMonitor{
   }
 
   getEventPath() {
-    return this.getEndpoint().split('/').slice(-3).join('/')
+    return this.getEndpoint().split('/').slice(2).join('/')
   }
 
   getLabel() {
