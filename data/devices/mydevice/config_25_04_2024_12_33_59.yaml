@@ -24,11 +24,6 @@ mqtt:
         - switch.turn_on: freshwater
         - delay: !lambda "return atoi(x.c_str());"
         - switch.turn_off: freshwater
-    - topic: devices/mydevice/switch/producta/pulsed_on
-      then:
-        - switch.turn_on: producta
-        - delay: !lambda "return atoi(x.c_str());"
-        - switch.turn_off: producta
 switch:
   - platform: gpio
     pin: 32
@@ -39,11 +34,6 @@ switch:
     pin: 25
     name: freshwater
     id: freshwater
-    restore_mode: ALWAYS_OFF
-  - platform: gpio
-    pin: 13
-    name: producta
-    id: producta
     restore_mode: ALWAYS_OFF
 binary_sensor:
   platform: gpio

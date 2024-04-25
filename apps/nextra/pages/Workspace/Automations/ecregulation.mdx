@@ -1,0 +1,83 @@
+import { Callout } from 'nextra/components'
+import { Steps } from 'nextra/components'
+import { Cards, Card } from 'nextra/components'
+
+# 🧂 EC autoregulation
+
+```js copy filename="ecregulation.ts"
+context.automation(
+  app,
+  async (params, res) => {
+    const ml = 1;
+    const minEc = 0.5;
+    const maxEc = 1.5;
+    const nutrients = [
+      {
+        peristaltic: "producta",
+        name: "BLOOM",
+        npkRatio: [0, 5, 4],
+        ratio: 3,
+      },
+
+      {
+        peristaltic: "productb",
+        name: "MICRO",
+        npkRatio: [5, 0, 1],
+        ratio: 1,
+      },
+
+      {
+        peristaltic: "productc",
+        name: "K",
+        npkRatio: [0, 0, 20],
+        ratio: 0.5,
+      },
+    ];
+    const msPerMl = 10000 / 2.1;
+    const convertMlToMs = (ml) => {
+      return ml * msPerMl;
+    };
+    let ratioSum = 0;
+    nutrients.forEach((nutrient) => {
+      ratioSum += nutrient.ratio;
+    });
+    context.deviceSub(
+      "firstgarden1712826191339",
+      "phectemp",
+      "EC",
+      async (message, topic) =>
+        context.sensorRangeEnforcer(
+          "firstgarden1712826191339",
+          "phectemp",
+          "EC",
+          context,
+          "0.8",
+          "0.2",
+          async (delta) =>
+            await context.deviceAction(
+              "firstgarden1712826191339",
+              "freshwater",
+              "pulsed_on",
+              "1000"
+            ),
+          async (delta) => {
+            nutrients.map(async (nutrient) => {
+              const result = Number(
+                ((ml * nutrient.ratio) / ratioSum).toFixed(2)
+              );
+              const duration = result ? convertMlToMs(result) : 1000;
+              await context.deviceAction(
+                "firstgarden1712826191339",
+                nutrient.peristaltic,
+                "pulsed_on",
+                duration
+              );
+            });
+          },
+          null
+        )
+    );
+  },
+  "NutrinetsAuto"
+);
+```

@@ -38,7 +38,21 @@ export default Protofy("code", async (app: Application, context) => {
   //context.mqtt is a mqttclient connection
   context.automation(
     app,
-    async (params, res) => logger.info(null, "message"),
-    "Filltank3"
+    async (params, res) => {
+      context.createPeriodicSchedule(
+        "08",
+        "00",
+        async () => await context.deviceAction("mydevice", "growingleds", "on"),
+        "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+      );
+      context.createPeriodicSchedule(
+        "19",
+        "00",
+        async () =>
+          await context.deviceAction("mydevice", "growingleds", "off"),
+        "Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday"
+      );
+    },
+    "photoperiod"
   );
 });

@@ -31,33 +31,22 @@ const logger = getLogger();
 Protofy("type", "CustomAPI");
 
 export default Protofy("code", async (app: Application, context) => {
-  //PUT YOUR API HERE
-  //context.devicePub function allows to communicate with devices via mqtt
-  //context.deviceSub allows to receive notifications from devices via mqtt
-  //app is a normal expressjs object
-  //context.mqtt is a mqttclient connection
-  context.automation(
-    app,
-    async (params, res) => {
-      context.deviceSub(
-        "mydevice",
-        "floatswitch",
-        "status",
-        async (message, topic, done) =>
-          context.flow.edgeDetector(
-            message,
-            "ON",
-            "OFF",
-            "f7e304a7-e10f-4cf1-8220-c60e15dafe83",
-            async (value) => {
-              await context.deviceAction("mydevice", "freshwater", "on");
-            },
-            async (value) => {
-              await context.deviceAction("mydevice", "freshwater", "off");
-            }
-          )
-      );
-    },
-    "Filltank"
+  context.deviceSub(
+    "mydevice",
+    "floatswitch",
+    "status",
+    async (message, topic) =>
+      context.flow.switch(
+        message,
+        "OFF",
+        "equals",
+        async () => {
+          await context.deviceAction("mydevice", "freshwater", "on");
+        },
+        async () => {
+          await context.deviceAction("mydevice", "freshwater", "off");
+        },
+        null
+      )
   );
 });
