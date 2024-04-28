@@ -45,7 +45,7 @@ export const JsxElementFactory = (JsxType) => {
         );
     }
     component.category = 'react'
-    component.keyWords = ["jsx", "jsxelement", "react", "tsx", "fragment", "selfclosed"]
+    component.keywords = ["jsx", "jsxelement", "react", "tsx", "fragment", "selfclosed"]
     component.getData = (node, data, nodesData, edges) => {
 
         // const tagName = { name: node?.getTagNameNode()?.getText() }
@@ -106,7 +106,8 @@ export const JsxElementFactory = (JsxType) => {
             if (!content) {
                 return total = total + fb.fallbackText + " "
             } else {
-                return total = total + (fb.preText + content + fb.postText) + " "
+                var propKey = fb.port.split('-')[1] ?? fb.port
+                return total = total + propKey + "=" + (fb.preText + content + fb.postText) + " "
             }
         }, "") ?? ''
         const fallbackProps = data._fallBack?.map(i => i.port) ?? []

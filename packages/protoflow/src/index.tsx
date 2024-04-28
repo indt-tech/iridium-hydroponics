@@ -9,9 +9,8 @@ export {PORT_TYPES, createNode, getId} from './lib/Node'
 export {default as Diagram} from './diagram/Diagram'
 export { isHandleConnected } from './diagram/Node';
 export {useFlowsStore, FlowStoreContext} from './store/FlowsStore'
-export {BaseJSMasks} from './nodes/custom'
 export { default as layouts } from './diagram/layouts';
-export { filterCallback, restoreCallback, filterCallbackProp, restoreCallbackProp } from './lib/Mask';
+export { filterCallback, restoreCallback, filterCallbackNodes, restoreCallbackNodes, filterCallbackProp, restoreCallbackProp, filterConnection } from './lib/Mask';
 export { default as FallbackPort } from './FallbackPort';
 export { generateId } from './lib/IdGenerator';
 export { connectNodes } from './lib/Edge';

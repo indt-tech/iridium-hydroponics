@@ -7,7 +7,7 @@ import { FlowStoreContext } from "../store/FlowsStore";
 import { SyntaxKind } from "ts-morph";
 import { FunctionSquare } from 'lucide-react';
 import { useNodeColor } from '../diagram/Theme';
-import { dumpArgumentsData, getArgumentsData } from './CallExpression';
+import { getArgumentsData, dumpArgumentsData } from '../utils/typesAndKinds';
 
 const Function = (node) => {
     const { id, type } = node
@@ -39,7 +39,7 @@ const Function = (node) => {
     );
 }
 Function.category = "program structure"
-Function.keyWords = ['function', '=>', 'arrow']
+Function.keywords = ['function', '=>', 'arrow']
 Function.getData = (node, data, nodesData, edges) => {
     let thenId = getId(node.getBody())
     const body = connectItem(thenId, 'output', node, 'call', data, nodesData, edges, null, [PORT_TYPES.data, PORT_TYPES.flow])

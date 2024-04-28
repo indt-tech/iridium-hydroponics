@@ -5,38 +5,53 @@ if you call paginated apis, you will need to wait for result.isLoaded and look i
 Paginated apis return an object like: {"itemsPerPage": 25, "items": [...], "total": 20, "page": 0, "pages": 1}
 */
 
+import React, { useState } from 'react'
 import { Theme, YStack, Text, XStack, Paragraph } from "@my/ui"
 import { UIWrapLib, UIWrap, withSession, Page, useEditor, API, SSR } from "protolib"
 import { DefaultLayout, } from "../../../layout/DefaultLayout"
 import { Protofy } from 'protolib/base'
+import { context } from "app/bundles/uiContext";
+import { useRouter } from "next/router";
 
 const isProtected = Protofy("protected", {{protected}})
-const { actionFetch } = API;
 
-const PageComponent = (props) => {
+const PageComponent = ({ currentView, setCurrentView, ...props }: any) => {
+    const router = useRouter();
+    context.onRender(() => {
+
+    });
     return (
         <Page height="99vh">
 
-        </Page>)
+        </Page>
+    )
 }
 
 const cw = UIWrapLib('@my/ui')
 
 export default {
     route: Protofy("route", "{{route}}"),
-    component: (props) => useEditor(
-        () => PageComponent(props), 
-        {
-            path: "/packages/app/bundles/custom/pages/{{name}}.tsx",
-            components: {
-                ...UIWrap("DefaultLayout", DefaultLayout, "../../../layout/DefaultLayout"),
-                ...cw("YStack", YStack),
-                ...cw("Text", Text),
-                ...cw("XStack", XStack),
-                ...cw("Paragraph", Paragraph),
-                ...cw("Theme", Theme)
-            }
-        }, 
-    ),
+    component: (props) => {
+        const [currentView, setCurrentView] = useState("default");
+
+        return useEditor(
+            <PageComponent currentView={currentView} setCurrentView={setCurrentView} {...props} />, 
+            {
+                path: "/packages/app/bundles/custom/pages/{{name}}.tsx",
+                context: {
+                    currentView: currentView,
+                    setCurrentView: setCurrentView
+                },
+                components: {
+                    ...UIWrap("DefaultLayout", DefaultLayout, "../../../layout/DefaultLayout"),
+                    ...cw("YStack", YStack),
+                    ...cw("Text", Text),
+                    ...cw("XStack", XStack),
+                    ...cw("Paragraph", Paragraph),
+                    ...cw("Theme", Theme)
+                }
+            }, 
+        )
+    },
     getServerSideProps: SSR(async (context) => withSession(context, isProtected?Protofy("permissions", {{{permissions}}}):undefined))
 }

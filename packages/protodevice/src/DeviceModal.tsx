@@ -6,11 +6,13 @@ import loading from './assets/protofitoLoading.gif';
 import loadingW from './assets/protofitoLoadingW.gif';
 import dancing from './assets/protofitoDancing.gif';
 import dancingW from './assets/protofitoDancingW.gif';
-import { AlertDialog } from 'protolib'
+import { AlertDialog, Tinted } from 'protolib'
 import { useThemeName } from 'tamagui'
 
 
+
 const DeviceModal = ({ stage, onCancel, onSelect, showModal, modalFeedback }) => {
+
     const isError = modalFeedback?.details?.error
     const isLoading = ['write'].includes(stage) && !isError && !modalFeedback?.message?.includes('Please hold "Boot"')
     const themeName = useThemeName();
@@ -25,17 +27,17 @@ const DeviceModal = ({ stage, onCancel, onSelect, showModal, modalFeedback }) =>
     const [msg, setMsg] = React.useState(stages[stage])
 
     const Link = (props) => {
-        return <a
-            target="_blank"
-            style={{ color: 'blue' }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.textDecoration = 'underline'
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.textDecoration = 'none'
-            }}
-            {...props}
-        />
+        return <Tinted><a
+        target="_blank"
+        style={{ color:"var(--color8)" }}
+        onMouseEnter={(e) => {
+            e.currentTarget.style.textDecoration = 'underline'
+        }}
+        onMouseLeave={(e) => {
+            e.currentTarget.style.textDecoration = 'none'
+        }}
+        {...props}
+    /></Tinted>
     }
     const ModalText = () => {
         return stage === 'upload'
@@ -101,7 +103,7 @@ const DeviceModal = ({ stage, onCancel, onSelect, showModal, modalFeedback }) =>
                 !isError && images[themeName][isLoading ? 'loading' : stage] ?
                     <img
                         alt="protofito dancing"
-                        style={{ height: "180px", width: isLoading ? "300px" : "190px", alignSelf: "center", objectFit: 'cover', paddingTop: "20px" }}
+                        style={{ height: isLoading ? "200px" : "180px", width: isLoading ? "300px" : "190px", alignSelf: "center", objectFit: 'cover', paddingTop: "20px" }}
                         src={images[themeName][isLoading ? 'loading' : stage]}
                     /> : null
             }

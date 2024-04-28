@@ -1,0 +1,203 @@
+esphome:
+  name: mydevice
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+logger: {}
+wifi:
+  ssid: Protofy
+  password: PR0T0FY100
+  power_save_mode: none
+sensor:
+  - platform: adc
+    pin: 35
+    name: lightsensor
+    id: lightsensor
+    update_interval: 10s
+    attenuation: 11db
+  - platform: dht
+    pin: 23
+    model: DHT22
+    id: temperaturehumidity
+    update_interval: 10s
+    temperature:
+      name: temperature
+    humidity:
+      name: humidity
+  - platform: mod_ntc
+    id: water_temp
+    name: water-temp
+    on_value:
+      then:
+        - component.update: ec
+        - component.update: ph
+  - platform: mod_ec
+    id: ec
+    update_interval: 60s
+    name: EC
+    temperature_sensor: water_temp
+  - platform: mod_ph
+    id: ph
+    update_interval: 60s
+    name: pH
+    temperature_sensor: water_temp
+switch:
+  - platform: gpio
+    pin: 32
+    name: growingleds
+    id: growingleds
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 33
+    name: pumpwaterflow
+    id: pumpwaterflow
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 25
+    name: pumpfreshwater
+    id: pumpfreshwater
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 26
+    name: pumpflush
+    id: pumpflush
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 27
+    name: pumpphup
+    id: pumpphup
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 13
+    name: pumpproducta
+    id: pumpproducta
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 19
+    name: pumpphdown
+    id: pumpphdown
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 18
+    name: pumproductb
+    id: pumproductb
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 17
+    name: pumpproductd
+    id: pumpproductd
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 16
+    name: pumpproductc
+    id: pumpproductc
+    restore_mode: ALWAYS_OFF
+mqtt:
+  on_message:
+    - topic: devices/mydevice/switch/growingleds/pulsed_on
+      then:
+        - switch.turn_on: growingleds
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: growingleds
+    - topic: devices/mydevice/switch/pumpwaterflow/pulsed_on
+      then:
+        - switch.turn_on: pumpwaterflow
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpwaterflow
+    - topic: devices/mydevice/switch/pumpfreshwater/pulsed_on
+      then:
+        - switch.turn_on: pumpfreshwater
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpfreshwater
+    - topic: devices/mydevice/switch/pumpflush/pulsed_on
+      then:
+        - switch.turn_on: pumpflush
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpflush
+    - topic: devices/mydevice/switch/pumpphup/pulsed_on
+      then:
+        - switch.turn_on: pumpphup
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpphup
+    - topic: devices/mydevice/switch/pumpproducta/pulsed_on
+      then:
+        - switch.turn_on: pumpproducta
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpproducta
+    - topic: devices/mydevice/switch/pumpphdown/pulsed_on
+      then:
+        - switch.turn_on: pumpphdown
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpphdown
+    - topic: devices/mydevice/switch/pumproductb/pulsed_on
+      then:
+        - switch.turn_on: pumproductb
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumproductb
+    - topic: devices/mydevice/switch/pumpproductd/pulsed_on
+      then:
+        - switch.turn_on: pumpproductd
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpproductd
+    - topic: devices/mydevice/switch/pumpproductc/pulsed_on
+      then:
+        - switch.turn_on: pumpproductc
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: pumpproductc
+  broker: 192.168.86.138
+  topic_prefix: devices/mydevice
+  port: '1883'
+binary_sensor:
+  platform: gpio
+  pin: 14
+  name: floatswitch
+  id: floatswitch
+  filters:
+    - delayed_off: 100ms
+    - delayed_on: 100ms
+external_components:
+  - source:
+      type: git
+      url: https://github.com/u-fire/ESPHomeComponents/
+i2c:
+  sda: 21
+  scl: 22
+button:
+  - platform: template
+    id: ec_calibrate_low
+    name: EC Calibrate Low 0.5
+    on_press:
+      lambda: return id(ec).calibrateLow(0.5);
+  - platform: template
+    id: ec_calibrate_high
+    name: EC Calibrate High 5.0
+    on_press:
+      lambda: return id(ec).calibrateHigh(5.0);
+  - platform: template
+    id: ec_calibrate_reset
+    name: EC Calibrate Reset
+    on_press:
+      lambda: return id(ec).calibrateReset();
+  - platform: template
+    id: ph_calibrate_low
+    name: pH Calibrate Low 4.0
+    on_press:
+      lambda: return id(ph).calibrateLow(4.0);
+  - platform: template
+    id: ph_calibrate_mid
+    name: pH Calibrate Mid 7.0
+    on_press:
+      lambda: return id(ph).calibrateMid(7.0);
+  - platform: template
+    id: ph_calibrate_high
+    name: pH Calibrate High 10.0
+    on_press:
+      lambda: return id(ph).calibrateHigh(10.0);
+  - platform: template
+    id: ph_calibrate_reset
+    name: pH Calibrate Reset
+    on_press:
+      lambda: return id(ph).calibrateReset();
+  - platform: factory_reset
+    name: Restart with Factory Default Settings

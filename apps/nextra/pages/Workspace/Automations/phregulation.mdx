@@ -1,0 +1,59 @@
+import { Callout } from 'nextra/components'
+import { Steps } from 'nextra/components'
+import { Cards, Card } from 'nextra/components'
+
+# 🧪 pH autoregulation
+
+```js copy filename="phregulation.ts"
+context.automation(
+  app,
+  async (params, res) => {
+    const minPh = 5;
+    const maxPh = 7;
+    context.deviceSub(
+      "firstgarden1712826191339",
+      "phectemp",
+      "Ph",
+      async (message, topic) => {
+        context.sensorRangeEnforcer(
+          "",
+          "",
+          "",
+          context,
+          "6.3",
+          "0.7",
+          async (delta) =>
+            await context.deviceAction(
+              "firstgarden1712826191339",
+              "phminus",
+              "pulsed_on",
+              "1000"
+            ),
+          async (delta) =>
+            await context.deviceAction(
+              "firstgarden1712826191339",
+              "phplus",
+              "pulsed_on",
+              "1000"
+            ),
+          null
+        );
+      }
+    );
+  },
+  "PhAuto"
+);
+app.get("/api/v1/off", async (req, res) => {
+  await context.deviceAction(
+    "mysecondplantation1712595061179",
+    "phplus",
+    "off"
+  );
+  await context.deviceAction(
+    "mysecondplantation1712595061179",
+    "phminus",
+    "off"
+  );
+  res.send("OK");
+});
+```

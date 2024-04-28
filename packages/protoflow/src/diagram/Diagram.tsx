@@ -131,6 +131,7 @@ const Diagram = React.forwardRef(({
             const parentData = nodeData[parentId]
             const deletedKey = edge.targetHandle.replace(parentId, '').slice(1)
             let parentType = nodeTypes[parentId.split('_')[0]]
+            if (!parentType) return
             if (parentType.type) parentType = parentType.type
 
             if (deletedKey) {
@@ -171,9 +172,9 @@ const Diagram = React.forwardRef(({
         [project]
     );
 
-    const showAll = () => {
+    const showAll = (selectedNodeId) => {
         setEdges(edgs => edgs.map(e => ({ ...e, hidden: false })))
-        setNodes(nds => nds.map(n => ({ ...n, hidden: false })))
+        setNodes(nds => nds.map(n => ({ ...n, hidden: false, selected: n.id == selectedNodeId })))
     }
 
     const findConnectedNodes = (nodeId) => { // get node ids connected to specific node
@@ -191,13 +192,13 @@ const Diagram = React.forwardRef(({
     const showSelectedContext = (selectedNodeId) => {
         const matchNodeIds = findConnectedNodes(selectedNodeId)
         setEdges(edgs => edgs.map(e => ({ ...e, hidden: !matchNodeIds.includes(e.target) })))
-        setNodes(nds => nds.map(n => ({ ...n, hidden: !matchNodeIds.includes(n.id) })))
+        setNodes(nds => nds.map(n => ({ ...n, hidden: !matchNodeIds.includes(n.id), selected: n.id == selectedNodeId })))
     }
 
     const hideUnselected = (selectedNodeId) => {
         if (selectedNodeId) {
-            setEdges(edgs => edgs.map(e => ({ ...e, hidden: true })))
-            setNodes(nds => nds.map(n => ({ ...n, hidden: n.id != selectedNodeId })))
+            setEdges(edgs => edgs.map(e => ({ ...e, hidden: true, selected: false })))
+            setNodes(nds => nds.map(n => ({ ...n, hidden: n.id != selectedNodeId, selected: n.id == selectedNodeId })))
         }
     }
     const zoomToNode = useCallback((selectedNodeId) => {
@@ -228,7 +229,7 @@ const Diagram = React.forwardRef(({
                 showSelectedContext(zoomNodes[0])
                 break;
             case 'flow':
-                showAll()
+                showAll(zoomNodes[0])
                 break;
             default:
                 console.error('Unauthorized value for nodePreview: ', nodePreview)

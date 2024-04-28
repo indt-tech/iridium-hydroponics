@@ -1,0 +1,25 @@
+import { Callout } from 'nextra/components'
+import { Steps } from 'nextra/components'
+import { Cards, Card } from 'nextra/components'
+
+# 🚰​ Water level
+This automation helps keeping the water level at desired level. 
+![Protofy](http://localhost:8080/media/workspace/automation_filltank.png?raw=true)
+
+
+```js copy filename="filltank.ts"
+context.deviceSub("mydevice", "floatswitch", "status", async (message, topic) =>
+  context.flow.switch(
+    message,
+    "OFF",
+    "equals",
+    async () => {
+      await context.deviceAction("mydevice", "freshwater", "on");
+    },
+    async () => {
+      await context.deviceAction("mydevice", "freshwater", "off");
+    },
+    null
+  )
+);
+```

@@ -1,0 +1,45 @@
+esphome:
+  name: mydevice
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+logger: {}
+wifi:
+  ssid: Protofy
+  password: PR0T0FY100
+  power_save_mode: none
+mqtt:
+  broker: 192.168.86.138
+  topic_prefix: devices/mydevice
+  port: '1883'
+  on_message:
+    - topic: devices/mydevice/switch/growingleds/pulsed_on
+      then:
+        - switch.turn_on: growingleds
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: growingleds
+    - topic: devices/mydevice/switch/freshwater/pulsed_on
+      then:
+        - switch.turn_on: freshwater
+        - delay: !lambda "return atoi(x.c_str());"
+        - switch.turn_off: freshwater
+switch:
+  - platform: gpio
+    pin: 32
+    name: growingleds
+    id: growingleds
+    restore_mode: ALWAYS_OFF
+  - platform: gpio
+    pin: 25
+    name: freshwater
+    id: freshwater
+    restore_mode: ALWAYS_OFF
+binary_sensor:
+  platform: gpio
+  pin: 14
+  name: floatswitch
+  id: floatswitch
+  filters:
+    - delayed_off: 100ms
+    - delayed_on: 100ms
